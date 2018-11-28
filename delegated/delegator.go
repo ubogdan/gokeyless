@@ -155,7 +155,6 @@ func (del *Delegator) Sign(req DelegatorQuery, resp *[]byte) error {
 	if !ok {
 		return errors.New("signature scheme not supported")
 	}
-	//How on earth do i get these times?
 	cert, found := del.certstore[req.SKI]
 	if !found {
 		return errors.New("Did not find SKI")

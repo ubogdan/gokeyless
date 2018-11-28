@@ -262,7 +262,7 @@ func main() {
 	}
 
 	if config.DelegatedCert != "" {
-		delegator, err := delegated.FromFile(config.DelegatedCert, config.DelegatedPrivKey, time.Duration(config.DelegatedTTL))
+		delegator, err := delegated.FromFile(config.DelegatedCert, config.DelegatedPrivKey, config.DelegatedTTL*time.Second)
 		if err != nil {
 			log.Fatalf("error initalizing delegated credential responder %v", err)
 		}
