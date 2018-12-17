@@ -178,6 +178,8 @@ type Server struct {
 	sealer Sealer
 	// dispatcher is an RPC server that exposes arbitrary APIs to the client.
 	dispatcher *rpc.Server
+	// limitedDispatcher is an RPC server for APIs less trusted clients can be trusted with
+	limitedDispatcher *rpc.Server
 
 	listeners []net.Listener
 	wp        *workerPool
@@ -201,9 +203,10 @@ func NewServer(config *ServeConfig, cert tls.Certificate, keylessCA *x509.CertPo
 				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
 			},
 		},
-		keys:       NewDefaultKeystore(),
-		stats:      newStatistics(),
-		dispatcher: rpc.NewServer(),
+		keys:              NewDefaultKeystore(),
+		stats:             newStatistics(),
+		dispatcher:        rpc.NewServer(),
+		limitedDispatcher: rpc.NewServer(),
 	}
 }
 
@@ -257,6 +260,11 @@ func (s *Server) SetSealer(sealer Sealer) {
 // for information on what kinds of recievers can be registered.
 func (s *Server) RegisterRPC(rcvr interface{}) error {
 	return s.dispatcher.Register(rcvr)
+}
+
+// RegisterLimitedRPC makes RPCs availible for limited clients
+func (s *Server) RegisterLimitedRPC(rcvr interface{}) error {
+	return s.limitedDispatcher.Register(rcvr)
 }
 
 // GetCert is a function that returns a certificate given a request.
@@ -506,7 +514,7 @@ func (w *limitedWorker) Do(job interface{}) interface{} {
 	case protocol.OpRPC:
 		codec := newServerCodec(pkt.Payload)
 
-		err := w.s.dispatcher.ServeRequest(codec)
+		err := w.s.limitedDispatcher.ServeRequest(codec)
 		if err != nil {
 			log.Errorf("Worker %v: ServeRPC: %v", w.name, err)
 			return w.s.makeErrResponse(req, protocol.ErrInternal, requestBegin)
