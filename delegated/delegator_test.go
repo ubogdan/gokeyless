@@ -2,11 +2,12 @@ package delegated
 
 import (
 	"crypto/tls"
-	"github.com/cloudflare/gokeyless/protocol"
 	"net"
 	"net/rpc"
 	"testing"
 	"time"
+
+	"github.com/cloudflare/gokeyless/protocol"
 )
 
 // Test delegation as an RPC.

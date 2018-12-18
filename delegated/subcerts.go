@@ -1,6 +1,4 @@
-// Copyright 2018 Cloudflare, Inc.
-
-// This package implements the backend for draft-02 of Delegated credentials for
+// Package delegated implements the backend for draft-02 of Delegated credentials for
 // TLS (https://tools.ietf.org/html/draft-ietf-tls-subcerts), an IETF Internet
 // draft and proposed TLS extension. If the client supports this extension, then
 // the server may use a "delegated credential" as the signing key in the
@@ -10,10 +8,6 @@
 // used to delegate TLS termination to a reverse proxy. Credentials can't be
 // revoked; in order to mitigate risk in case the middlebox is compromised, the
 // credential is only valid for a short time (days, hours, or even minutes).
-//
-// This package provides functionalities for minting and validating delegated
-// credentials. It also implements parts of the X.509 standard for EdDSA
-// siganture schemes (draft-04), as needed for minting DCss.
 package delegated
 
 import (

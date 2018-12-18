@@ -262,7 +262,7 @@ func (s *Server) RegisterRPC(rcvr interface{}) error {
 	return s.dispatcher.Register(rcvr)
 }
 
-// RegisterLimitedRPC makes RPCs availible for limited clients
+// RegisterLimitedRPC makes RPCs availible for limited clients.
 func (s *Server) RegisterLimitedRPC(rcvr interface{}) error {
 	return s.limitedDispatcher.Register(rcvr)
 }
@@ -711,7 +711,7 @@ func (s *Server) Serve(l net.Listener) error {
 
 		tconn := tls.Server(c, s.tlsConfig) //If limited use just limited workers
 		var conn *conn
-		if s.config.IsLimited(tconn) {
+		if s.config.isLimited(tconn) {
 			log.Debug("Connection is limited")
 			conn = newConn(s, c.RemoteAddr().String(), tconn, timeout, s.wp.Limited, s.wp.Limited)
 		} else {
@@ -816,7 +816,7 @@ type ServeConfig struct {
 	bgWorkers                  int
 	tcpTimeout, unixTimeout    time.Duration
 	utilization                func(other, ecdsa float64)
-	IsLimited                  func(conn *tls.Conn) bool
+	isLimited                  func(conn *tls.Conn) bool
 }
 
 const (
@@ -831,6 +831,7 @@ const (
 //  - The number of background workers is 1
 //  - The TCP connection timeout is 30 seconds
 //  - The Unix connection timeout is 1 hour
+//  - All connections have full power
 func DefaultServeConfig() *ServeConfig {
 	necdsa := runtime.NumCPU()
 	if runtime.NumCPU() < 2 {
@@ -843,7 +844,7 @@ func DefaultServeConfig() *ServeConfig {
 		bgWorkers:      1,
 		tcpTimeout:     defaultTCPTimeout,
 		unixTimeout:    defaultUnixTimeout,
-		IsLimited:      func(conn *tls.Conn) bool { return false },
+		isLimited:      func(conn *tls.Conn) bool { return false },
 	}
 }
 
@@ -915,6 +916,14 @@ func (s *ServeConfig) UnixTimeout() time.Duration {
 // busy.
 func (s *ServeConfig) WithUtilization(f func(other, ecdsa float64)) *ServeConfig {
 	s.utilization = f
+	return s
+}
+
+// WithIsLimited specifies the function f to call to determine if a connection is limited.
+// f is called on each new connection, and if f returns true the connection will only serve
+// OpPing and OpRPC requests, and only RPCs registered with RegisterLimitedRPC
+func (s *ServeConfig) WithIsLimited(f func(conn *tls.Conn) bool) *ServeConfig {
+	s.isLimited = f
 	return s
 }
 

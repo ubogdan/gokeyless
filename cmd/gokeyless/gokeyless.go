@@ -47,7 +47,7 @@ type Config struct {
 
 	PidFile          string        `yaml:"pid_file" mapstructure:"pid_file"`
 	DelegatedCert    string        `yaml:"delegated_cert" mapstructure:"delegated_cert"`
-	DelegatedPrivKey string        `yaml:"delegated_privkey" mapstructure:"delegated_privkey"` //TODO: support all options we do for locating the key
+	DelegatedPrivKey string        `yaml:"delegated_privkey" mapstructure:"delegated_privkey"`
 	DelegatedTTL     time.Duration `yaml:"delegated_ttl" mapstructure:"delegated_ttl"`
 }
 

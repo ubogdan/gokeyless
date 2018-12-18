@@ -1,11 +1,4 @@
-//Copyright 2018 Cloudflare, Inc.
-
-// TODO(cjpatton): Making error handling systematic. It should be possible to
-// check for all possible kinds of errors:
-//  * Was the version rejected?
-//  * Was the scheme rejected?
-//  * Was the TTL rejected? If so, was it too high or too low?
-//  * If there was a different error, then return the error itself.
+//Package delegated implements delegated credentials.
 package delegated
 
 import (
@@ -13,9 +6,10 @@ import (
 	"crypto/ecdsa"
 	"crypto/tls"
 	"errors"
+	"time"
+
 	"github.com/cloudflare/gokeyless/protocol"
 	"github.com/cloudflare/gokeyless/server"
-	"time"
 )
 
 // DelegatorConfig stores the parameters the delegator uses to decide which
@@ -65,8 +59,7 @@ func GetDefaultDelegatorConfig() *DelegatorConfig {
 	}
 }
 
-// Delegator store the state needed for handling delegation requests.
-// How about I store certs by SKI as well when initalizing the whole thing?
+// Delegator stores the state needed for handling delegation requests.
 type Delegator struct {
 	keystore  server.Keystore
 	cfg       *DelegatorConfig
@@ -121,19 +114,19 @@ func NewDelegator(cert *tls.Certificate, cfg *DelegatorConfig) (*Delegator, erro
 	return &Delegator{&keystore, cfg, certstore}, nil
 }
 
-// Sign processes a delegation request. If the request satisfies the delegator
-// parameters, then the delegated credential is encoded and written as the
-// response; otherwise, an error is returned.
-//
-// This function satisfies the criteria for use as an RPC: see
-// https://golang.org/pkg/net/rpc/ for details.
-
+// DelegatorQuery is what is sent over the wire to request a delegated credential.
 type DelegatorQuery struct {
 	SKI  protocol.SKI
 	TTL  time.Duration
 	Cred []byte
 }
 
+// Sign processes a delegation request. If the request satisfies the delegator
+// parameters, then the delegated credential is encoded and written as the
+// response; otherwise, an error is returned.
+//
+// This function satisfies the criteria for use as an RPC: see
+// https://golang.org/pkg/net/rpc/ for details.
 func (del *Delegator) Sign(req DelegatorQuery, resp *[]byte) error {
 	cred, err := UnmarshalCredential(req.Cred)
 	if err != nil {

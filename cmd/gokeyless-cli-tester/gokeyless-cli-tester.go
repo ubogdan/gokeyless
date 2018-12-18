@@ -70,8 +70,6 @@ func main() {
 			log.Fatal("Could not establish connection", err)
 		}
 		rpc := conn.RPC()
-
-		//I imagine all kinds of stuff will eventually get passed to this function
 		certfile, err := os.Open(delegateCert)
 		if err != nil {
 			log.Fatal("Could not open cert we want to get delegation from", err)
@@ -85,8 +83,8 @@ func main() {
 		if err != nil {
 			log.Fatal("Could not parse certificate", err)
 		}
-		notBefore := cert.NotBefore
-		ttl := time.Now().Sub(notBefore) + 3*1e12 //Or any time really
+
+		ttl := 24 * time.Hour()
 		cred, _, err := delegated.NewCredential(uint16(tls.ECDSAWithP256AndSHA256), delegated.VersionTLS13, ttl)
 		req, err := cred.Marshal()
 		if err != nil {
