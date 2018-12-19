@@ -84,7 +84,7 @@ func main() {
 			log.Fatal("Could not parse certificate", err)
 		}
 
-		ttl := 24 * time.Hour()
+		ttl := 24 * time.Hour
 		cred, _, err := delegated.NewCredential(uint16(tls.ECDSAWithP256AndSHA256), delegated.VersionTLS13, ttl)
 		req, err := cred.Marshal()
 		if err != nil {

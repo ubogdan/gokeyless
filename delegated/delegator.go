@@ -66,15 +66,17 @@ type Delegator struct {
 	certstore map[protocol.SKI]*tls.Certificate
 }
 
-type DummyKeystore struct {
+type dummyKeystore struct {
 	cert *tls.Certificate
 }
 
-func (store *DummyKeystore) Get(op *protocol.Operation) (crypto.Signer, error) {
+// Get retrieves the only key we have in the dummy keystore.
+func (store *dummyKeystore) Get(op *protocol.Operation) (crypto.Signer, error) {
 	tmp := (store.cert.PrivateKey).(ecdsa.PrivateKey)
 	return crypto.Signer(&tmp), nil
 }
 
+// FromFile creates a delegator from a file with a certificate and and a key.
 func FromFile(cert string, key string, ttl time.Duration) (*Delegator, error) {
 	ourcert, err := tls.LoadX509KeyPair(cert, key)
 	if err != nil {
@@ -107,7 +109,7 @@ func NewDelegator(cert *tls.Certificate, cfg *DelegatorConfig) (*Delegator, erro
 	if len(cfg.ProtocolVersions) == 0 {
 		return nil, errors.New("empty ProtocolVersions")
 	}
-	keystore := DummyKeystore{cert: cert}
+	keystore := dummyKeystore{cert: cert}
 	certstore := make(map[protocol.SKI]*tls.Certificate)
 	ski, _ := protocol.GetSKICert(cert.Leaf)
 	certstore[ski] = cert
