@@ -8,7 +8,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"time"
 
 	"github.com/cloudflare/cfssl/log"
@@ -46,7 +45,7 @@ func init() {
 	flag.IntVar(&workers, "workers", 8, "Number of concurrent connections to keyserver")
 	flag.IntVar(&repeats, "repeats", 0, "Number of test repeats")
 	flag.DurationVar(&testLen, "testlen", 5*time.Second, "test length in seconds")
-	flag.StringVar(&delegateCert, "delegatecert", "", "cert we want to get a delegation for")
+	flag.StringVar(&delegateCert, "delegate-cert", "", "cert we want to get a delegation for")
 	flag.Parse()
 }
 
@@ -61,74 +60,78 @@ func main() {
 		log.Fatal("failed to load cert directory:", err)
 	}
 	if delegate {
-		r, err := c.LookupServer(keyserver)
-		if err != nil {
-			log.Fatal("Could not look up keyserver", err)
-		}
-		conn, err := r.Dial(c)
-		if err != nil {
-			log.Fatal("Could not establish connection", err)
-		}
-		rpc := conn.RPC()
-		certfile, err := os.Open(delegateCert)
-		if err != nil {
-			log.Fatal("Could not open cert we want to get delegation from", err)
-		}
-		pemblock, err := ioutil.ReadAll(certfile)
-		if err != nil {
-			log.Fatal("Could not glob file", err)
-		}
-		certblock, _ := pem.Decode(pemblock)
-		cert, err := x509.ParseCertificate(certblock.Bytes)
-		if err != nil {
-			log.Fatal("Could not parse certificate", err)
-		}
-
-		ttl := 24 * time.Hour
-		cred, _, err := delegated.NewCredential(uint16(tls.ECDSAWithP256AndSHA256), delegated.VersionTLS13, ttl)
-		req, err := cred.Marshal()
-		if err != nil {
-			log.Fatal("failed to create query", err)
-		}
-		var resp []byte
-		err = rpc.Call("Delegator.Sign", req, &resp) //Richer queries and responses would be a good idea
-		if err != nil {
-			log.Fatal("failed in RPC", err)
-		}
-		dc, err := delegated.UnmarshalDelegatedCredential(resp)
-		if err != nil {
-			log.Fatal("failed to parse response")
-		}
-		valid, err := dc.Validate(cert, time.Now())
-		if err != nil {
-			log.Fatal("Error in validation", err)
-		}
-		if !valid {
-			log.Fatal("Got invalid response")
-		}
-		log.Fatalf("Got valid response")
-		log.Fatalf("Got response %v", resp)
-	}
-
-	results := tests.NewResults()
-	results.RegisterTest("ping", tests.NewPingTest(c, keyserver))
-	for _, priv := range privs {
-		ski, _ := protocol.GetSKI(priv.Public())
-		for name, test := range tests.NewSignTests(priv) {
-			results.RegisterTest(ski.String()+"."+name, test)
-		}
-	}
-
-	if benchmark {
-		results.RunBenchmarkTests(repeats, workers)
+		testDelegate(c)
 	} else {
-		results.RunTests(testLen, workers)
+		results := tests.NewResults()
+		results.RegisterTest("ping", tests.NewPingTest(c, keyserver))
+		for _, priv := range privs {
+			ski, _ := protocol.GetSKI(priv.Public())
+			for name, test := range tests.NewSignTests(priv) {
+				results.RegisterTest(ski.String()+"."+name, test)
+			}
+		}
+
+		if benchmark {
+			results.RunBenchmarkTests(repeats, workers)
+		} else {
+			results.RunTests(testLen, workers)
+		}
+		resultsJSON, err := json.MarshalIndent(results, "", "\t")
+		if err != nil {
+			log.Fatal("failed to marshal results:", err)
+		}
+
+		fmt.Println(string(resultsJSON))
 	}
-	resultsJSON, err := json.MarshalIndent(results, "", "\t")
+}
+
+func testDelegate(c *client.Client) {
+	r, err := c.LookupServer(keyserver)
 	if err != nil {
-		log.Fatal("failed to marshal results:", err)
+		log.Fatal("Could not look up keyserver", err)
+	}
+	conn, err := r.Dial(c)
+	if err != nil {
+		log.Fatal("Could not establish connection", err)
+	}
+	rpc := conn.RPC()
+	pemblock, err := ioutil.ReadFile(delegateCert)
+	if err != nil {
+		log.Fatal("Could not read certificate", err)
+	}
+	certblock, _ := pem.Decode(pemblock)
+	cert, err := x509.ParseCertificate(certblock.Bytes)
+	if err != nil {
+		log.Fatal("Could not parse certificate", err)
 	}
 
-	fmt.Println(string(resultsJSON))
-
+	ttl := 24 * time.Hour
+	cred, _, err := delegated.NewCredential(uint16(tls.ECDSAWithP256AndSHA256), delegated.VersionTLS13, ttl)
+	if err != nil {
+		log.Fatal("failed to create query", err)
+	}
+	var req delegated.DelegatorQuery
+	req.Cred, err = cred.Marshal()
+	req.TTL = ttl
+	req.SKI, err = protocol.GetSKICert(cert)
+	if err != nil {
+		log.Fatal("failed to create query", err)
+	}
+	var resp []byte
+	err = rpc.Call("Delegator.Sign", req, &resp)
+	if err != nil {
+		log.Fatal("failed in RPC", err)
+	}
+	dc, err := delegated.UnmarshalDelegatedCredential(resp)
+	if err != nil {
+		log.Fatal("failed to parse response")
+	}
+	valid, err := dc.Validate(cert, time.Now())
+	if err != nil {
+		log.Fatal("Error in validation", err)
+	} else if !valid {
+		log.Fatal("Got invalid response")
+	}
+	fmt.Printf("Got valid response\n")
+	fmt.Printf("Got response %v\n", resp)
 }

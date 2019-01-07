@@ -11,4 +11,4 @@ port: 2407
 pid_file:
 delegated_cert: delegate.pem
 delegated_privkey: delegate.key
-delegated_ttl: 86400000000000
+delegated_ttl: 86400
