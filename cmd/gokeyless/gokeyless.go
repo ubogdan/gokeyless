@@ -45,10 +45,11 @@ type Config struct {
 	Port        int `yaml:"port" mapstructure:"port"`
 	MetricsPort int `yaml:"metrics_port" mapstructure:"metrics_port"`
 
-	PidFile          string        `yaml:"pid_file" mapstructure:"pid_file"`
-	DelegatedCert    string        `yaml:"delegated_cert" mapstructure:"delegated_cert"`
-	DelegatedPrivKey string        `yaml:"delegated_privkey" mapstructure:"delegated_privkey"`
-	DelegatedTTL     time.Duration `yaml:"delegated_ttl" mapstructure:"delegated_ttl"`
+	PidFile string `yaml:"pid_file" mapstructure:"pid_file"`
+
+	DelegatedCert string        `yaml:"delegated_cert" mapstructure:"delegated_cert"`
+	DelegatedKey  string        `yaml:"delegated_privkey" mapstructure:"delegated_privkey"`
+	DelegatedTTL  time.Duration `yaml:"delegated_ttl" mapstructure:"delegated_ttl"`
 }
 
 // PrivateKeyStoreConfig defines a key store.
@@ -262,7 +263,7 @@ func main() {
 	}
 
 	if config.DelegatedCert != "" {
-		delegator, err := delegated.FromFile(config.DelegatedCert, config.DelegatedPrivKey, config.DelegatedTTL*time.Second)
+		delegator, err := delegated.FromFile(config.DelegatedCert, config.DelegatedKey, config.DelegatedTTL*time.Second)
 		if err != nil {
 			log.Fatalf("error initalizing delegated credential responder %v", err)
 		}

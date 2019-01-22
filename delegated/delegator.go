@@ -111,7 +111,10 @@ func NewDelegator(cert *tls.Certificate, cfg *DelegatorConfig) (*Delegator, erro
 	}
 	keystore := dummyKeystore{cert: cert}
 	certstore := make(map[protocol.SKI]*tls.Certificate)
-	ski, _ := protocol.GetSKICert(cert.Leaf)
+	ski, err := protocol.GetSKICert(cert.Leaf)
+	if err != nil {
+		return nil, err
+	}
 	certstore[ski] = cert
 	return &Delegator{&keystore, cfg, certstore}, nil
 }

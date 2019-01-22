@@ -46,12 +46,15 @@ const (
 	// NOTE: Once these are available upstream, these code points should be
 	// removed.
 	Ed25519 tls.SignatureScheme = 0x0807
+
+	// The length of the start of a credential
+	paramsLen = 8
 )
 
 var errNoDelegationUsage = errors.New("certificate not authorized for delegation")
 
-// delegationUsageId is the DelegationUsage X.509 extension OID.
-var DelegationUsageId = asn1.ObjectIdentifier{1, 3, 6, 1, 4, 1, 44363, 44}
+// DelegationUsageID is the DelegationUsage X.509 extension OID.
+var DelegationUsageID = asn1.ObjectIdentifier{1, 3, 6, 1, 4, 1, 44363, 44}
 
 // CreateDelegationUsagePKIXExtension returns a pkix.Extension that every delegation
 // certificate must have.
@@ -63,7 +66,7 @@ var DelegationUsageId = asn1.ObjectIdentifier{1, 3, 6, 1, 4, 1, 44363, 44}
 // function.
 func CreateDelegationUsagePKIXExtension() *pkix.Extension {
 	return &pkix.Extension{
-		Id:       DelegationUsageId,
+		Id:       DelegationUsageID,
 		Critical: false,
 		Value:    nil,
 	}
@@ -80,7 +83,7 @@ func IsDelegationCertificate(cert *x509.Certificate) bool {
 	// Check that the certificate has the DelegationUsage extension and that
 	// it's non-critical (per the spec).
 	for _, extension := range cert.Extensions {
-		if extension.Id.Equal(DelegationUsageId) {
+		if extension.Id.Equal(DelegationUsageID) {
 			return true
 		}
 	}
@@ -175,8 +178,6 @@ func (cred *Credential) marshalPublicKey() ([]byte, error) {
 
 // Marshal encodes a credential as per the spec.
 func (cred *Credential) Marshal() ([]byte, error) {
-	paramsLen := 8
-
 	// Write the valid_time, scheme, and version fields.
 	serialized := make([]byte, paramsLen+3) // +3 for the length of the public key field.
 	binary.BigEndian.PutUint32(serialized, uint32(cred.ValidTime/time.Second))
@@ -204,8 +205,6 @@ func (cred *Credential) Marshal() ([]byte, error) {
 
 // UnmarshalCredential decodes a credential and returns it.
 func UnmarshalCredential(serialized []byte) (*Credential, error) {
-	paramsLen := 8
-
 	// Bytes 0:4 are the valid_time field, 4:6 are the scheme field, 6:8 are the
 	// version field, and 8:10 are the length of the serialized
 	// SubjectPublicKeyInfo.

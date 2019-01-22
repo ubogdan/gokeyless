@@ -840,7 +840,7 @@ func DefaultServeConfig() *ServeConfig {
 	return &ServeConfig{
 		ecdsaWorkers:   necdsa,
 		otherWorkers:   2,
-		limitedWorkers: 2,
+		limitedWorkers: 0,
 		bgWorkers:      1,
 		tcpTimeout:     defaultTCPTimeout,
 		unixTimeout:    defaultUnixTimeout,
@@ -880,6 +880,18 @@ func (s *ServeConfig) WithBackgroundWorkers(n int) *ServeConfig {
 // BackgroundWorkers returns the number of background worker goroutines.
 func (s *ServeConfig) BackgroundWorkers() int {
 	return s.bgWorkers
+}
+
+// WithLimitedWorkers specifies the number of limited worker goroutines to
+// use.
+func (s *ServeConfig) WithLimitedWorkers(n int) *ServeConfig {
+	s.limitedWorkers = n
+	return s
+}
+
+// LimitedWorkers returns the number of limited worker goroutines.
+func (s *ServeConfig) LimitedWorkers() int {
+	return s.limitedWorkers
 }
 
 // WithTCPTimeout specifies the network connection timeout to use for TCP

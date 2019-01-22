@@ -32,29 +32,27 @@ func TestDelegatorRPC(t *testing.T) {
 	}
 
 	// Set up a TCP socket for the delegator.
-	l, err := net.Listen("tcp", ":1234")
+	l, err := net.Listen("tcp", ":0")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer l.Close()
 
 	// Listen for and serve a single connection.
-	var serr error
-	sch := make(chan net.Conn, 1)
+	sch := make(chan error, 1)
 	go func() {
 		sconn, err := l.Accept()
 		if err != nil {
-			serr = err
-			sch <- nil
+			sch <- err
 			return
 		}
 
 		rpc.ServeConn(sconn)
-		sch <- sconn
+		sch <- nil
 	}()
 
 	// Dial the delegator.
-	cli, err := rpc.Dial("tcp", "localhost:1234")
+	cli, err := rpc.Dial("tcp", l.Addr().String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -127,7 +125,7 @@ func TestDelegatorRPC(t *testing.T) {
 
 	// Wait for server to exit.
 	srv := <-sch
-	if srv == nil {
-		t.Fatal(serr)
+	if srv != nil {
+		t.Fatal(srv)
 	}
 }
