@@ -335,8 +335,7 @@ func Delegate(cert *tls.Certificate, cred *Credential) (*DelegatedCredential, er
 			return nil, fmt.Errorf("unrecognized curve %s", curveName)
 		}
 	default:
-		delegatorAlgorithm = tls.ECDSAWithP256AndSHA256
-		//		return nil, fmt.Errorf("unsupported delgation key type: %T", sk)
+		return nil, fmt.Errorf("unsupported delgation key type: %T", sk)
 	}
 
 	// Prepare the credential for digital signing.
