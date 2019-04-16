@@ -316,10 +316,14 @@ func (s *IntegrationTestSuite) TestShutdown() {
 	const n = 100
 	wg := sync.WaitGroup{}
 	wg.Add(n)
+	wg2 := sync.WaitGroup{}
+	wg2.Add(n)
 	done := make(chan struct{})
 	for i := 0; i < n; i++ {
 		go func() {
 			wg.Done()
+			defer wg2.Done()
+
 			// Continuously spawn new connections without closing them.
 			for {
 				select {
@@ -336,8 +340,9 @@ func (s *IntegrationTestSuite) TestShutdown() {
 	wg.Wait()
 	time.Sleep(100 * time.Millisecond)
 
-	err := shutdownServer(s.server, 2*time.Second)
+	err := shutdownServer(s.server, 5*time.Second)
 	close(done) // stop spawning connections
+	wg2.Wait()
 	require.NoError(err)
 
 	// Let TearDownTest know we've already closed it.
