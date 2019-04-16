@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -340,11 +341,18 @@ func (s *IntegrationTestSuite) TestShutdown() {
 	wg.Wait()
 	time.Sleep(100 * time.Millisecond)
 
-	err := shutdownServer(s.server, 5*time.Second)
+	err := shutdownServer(s.server, 2*time.Second)
 	close(done) // stop spawning connections
 	wg2.Wait()
-	require.NoError(err)
 
 	// Let TearDownTest know we've already closed it.
 	s.server = nil
+
+	// Dump the stacks of running goroutines if we're about to fail.
+	if err != nil {
+		buf := make([]byte, 1<<20)
+		runtime.Stack(buf, true)
+		fmt.Printf("%s", buf)
+	}
+	require.NoError(err)
 }

@@ -17,6 +17,7 @@ install:
 go_import_path: github.com/cloudflare/gokeyless
 
 script:
+  - GODEBUG=cgocheck=2 go test -tags pkcs11 -v -cover -race ./tests -args -loglevel=0
   - make vet lint test-nohsm test-trust
 
 notifications:
