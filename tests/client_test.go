@@ -341,7 +341,7 @@ func (s *IntegrationTestSuite) TestShutdown() {
 	wg.Wait()
 	time.Sleep(100 * time.Millisecond)
 
-	err := shutdownServer(s.server, 2*time.Second)
+	err := shutdownServer(s.server, 30*time.Second)
 	close(done) // stop spawning connections
 	wg2.Wait()
 
