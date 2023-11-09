@@ -1,0 +1,177 @@
+repo_name: ubogdan/gokeyless
+report_id: cc0d1b758b2a6f6d07a738c95830f392
+repo_type: Public
+timestamp: '2023-11-09T21:51:46+00:00'
+requested_by: nickysemenza
+provider: github
+branch: master
+detected_tools_count: 15
+tools:
+- name: Golang
+  description: An open source programming language that makes it easy to build simple,
+    reliable, and efficient software
+  website_url: http://golang.org/
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1005/O6AczwfV_400x400.png
+  detection_source: Repo Metadata
+- name: Protobuf
+  description: Google's data interchange format
+  website_url: https://developers.google.com/protocol-buffers/
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Serialization Frameworks
+  image_url: https://img.stackshare.io/service/4393/ma2jqJKH_400x400.png
+  detection_source: go.mod
+  last_updated_by: dependabot[bot]
+  last_updated_on: 2023-11-09 16:59:11.000000000 Z
+- name: gRPC
+  description: A high performance, open-source universal RPC framework
+  website_url: https://grpc.io/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Remote Procedure Call (RPC)
+  image_url: https://img.stackshare.io/service/4670/default_d811b0ac72205af84aca21f967594338580be913.png
+  detection_source: go.mod
+  last_updated_by: Watson Ladd
+  last_updated_on: 2019-10-16 20:03:39.000000000 Z
+- name: ScratchDB
+  description: Open source Snowflake on ClickHouse
+  website_url: https://www.scratchdb.com/
+  open_source: false
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Big Data Tools
+  image_url: https://img.stackshare.io/service/104997/default_64f16b2ca9869cd997fc48770dfb2fbf268a56d1.png
+  detection_source: vendor/github.com/pelletier/go-toml/v2/Dockerfile
+  last_updated_by: dependabot[bot]
+  last_updated_on: 2023-05-16 16:32:02.000000000 Z
+- name: Azure Pipelines
+  description: Continuously build, test, and deploy to any platform and cloud
+  website_url: https://azure.microsoft.com/ko-kr/services/devops/pipelines/
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/10164/528389819366_e7a0672f0480b3e98d21_512.png
+  detection_source: vendor/github.com/Azure/go-autorest/azure-pipelines.yml
+  last_updated_by: Nicky Semenza
+  last_updated_on: 2021-03-04 16:53:25.000000000 Z
+- name: Codecov
+  description: Hosted coverage reports with awesome features to enhance your CI workflow
+  website_url: https://codecov.io/
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Code Coverage
+  image_url: https://img.stackshare.io/service/2673/Codecov_Mark_Circle_Pink.png
+  detection_source: vendor/gopkg.in/ini.v1/codecov.yml
+  last_updated_by: dependabot[bot]
+  last_updated_on: 2023-08-21 01:03:19.000000000 Z
+- name: Docker
+  description: Enterprise Container Platform for High-Velocity Innovation.
+  website_url: https://www.docker.com/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Virtual Machine Platforms & Containers
+  image_url: https://img.stackshare.io/service/586/n4u37v9t_400x400.png
+  detection_source: Repo Metadata
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source: Repo Metadata
+- name: GitHub Actions
+  description: Automate your workflow from idea to production
+  website_url: https://github.com/features/actions
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source: ".github/workflows/snapshot.yml"
+  last_updated_by: dependabot[bot]
+  last_updated_on: 2023-09-11 00:10:48.000000000 Z
+- name: Google Cloud Build
+  description: Continuously build, test, and deploy.
+  website_url: https://cloud.google.com/cloud-build
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Deployment
+  image_url: https://img.stackshare.io/service/9309/PoHJY3K8_400x400.jpg
+  detection_source: vendor/github.com/google/certificate-transparency-go/cloudbuild.yaml
+  last_updated_by: dependabot[bot]
+  last_updated_on: 2023-05-15 17:10:35.000000000 Z
+- name: OpenCensus
+  description: A single distribution of libraries that automatically collect traces
+    and send them to any backend
+  website_url: https://opencensus.io/
+  open_source: false
+  hosted_saas: false
+  category: Monitoring
+  sub_category: Performance Monitoring
+  image_url: https://img.stackshare.io/service/10794/EpBd2Xrw_400x400.jpg
+  detection_source: vendor/github.com/Azure/go-autorest/Gopkg.toml
+  last_updated_by: dependabot[bot]
+  last_updated_on: 2023-05-15 17:10:35.000000000 Z
+- name: Prometheus
+  description: An open-source service monitoring system and time series database,
+    developed by SoundCloud
+  website_url: http://prometheus.io/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Monitoring
+  sub_category: Monitoring Tools
+  image_url: https://img.stackshare.io/service/2501/default_3cf1b307194b26782be5cb209d30360580ae5b3c.png
+  detection_source: go.mod
+  last_updated_by: dependabot[bot]
+  last_updated_on: 2023-10-02 00:04:23.000000000 Z
+- name: Testify
+  description: A toolkit with common assertions and mocks that plays nicely with the
+    standard library
+  website_url: https://github.com/stretchr/testify
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Go Testing
+  image_url: https://img.stackshare.io/service/8695/stretchr.png
+  detection_source: vendor/github.com/uber/jaeger-client-go/Gopkg.toml
+  last_updated_by: dependabot[bot]
+  last_updated_on: 2023-06-12 01:17:17.000000000 Z
+- name: Travis CI
+  description: A hosted continuous integration service for open source and private
+    projects
+  website_url: http://travis-ci.com/
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/460/Lu6cGu0z_400x400.png
+  detection_source: vendor/gopkg.in/yaml.v2/.travis.yml
+  last_updated_by: Christopher Broglie
+  last_updated_on: 2019-05-19 21:47:16.000000000 Z
+- name: Shell
+  description: A shell is a text-based terminal, used for manipulating programs and
+    files. Shell scripts typically manage program execution.
+  website_url: https://en.wikipedia.org/wiki/Shell_script
+  open_source: false
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source: Repo Metadata
