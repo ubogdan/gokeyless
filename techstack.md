@@ -1,7 +1,8 @@
 <!--
---- Readme.md Snippet without images Start ---
+&lt;--- Readme.md Snippet without images Start ---&gt;
 ## Tech Stack
 ubogdan/gokeyless is built on the following main stack:
+
 - [Golang](http://golang.org/) – Languages
 - [Prometheus](http://prometheus.io/) – Monitoring Tools
 - [Codecov](https://codecov.io/) – Code Coverage
@@ -18,11 +19,13 @@ ubogdan/gokeyless is built on the following main stack:
 - [Travis CI](http://travis-ci.com/) – Continuous Integration
 
 Full tech stack [here](/techstack.md)
---- Readme.md Snippet without images End ---
 
---- Readme.md Snippet with images Start ---
+&lt;--- Readme.md Snippet without images End ---&gt;
+
+&lt;--- Readme.md Snippet with images Start ---&gt;
 ## Tech Stack
 ubogdan/gokeyless is built on the following main stack:
+
 - <img width='25' height='25' src='https://img.stackshare.io/service/1005/O6AczwfV_400x400.png' alt='Golang'/> [Golang](http://golang.org/) – Languages
 - <img width='25' height='25' src='https://img.stackshare.io/service/2501/default_3cf1b307194b26782be5cb209d30360580ae5b3c.png' alt='Prometheus'/> [Prometheus](http://prometheus.io/) – Monitoring Tools
 - <img width='25' height='25' src='https://img.stackshare.io/service/2673/Codecov_Mark_Circle_Pink.png' alt='Codecov'/> [Codecov](https://codecov.io/) – Code Coverage
@@ -39,14 +42,15 @@ ubogdan/gokeyless is built on the following main stack:
 - <img width='25' height='25' src='https://img.stackshare.io/service/460/Lu6cGu0z_400x400.png' alt='Travis CI'/> [Travis CI](http://travis-ci.com/) – Continuous Integration
 
 Full tech stack [here](/techstack.md)
---- Readme.md Snippet with images End ---
+
+&lt;--- Readme.md Snippet with images End ---&gt;
 -->
 <div align="center">
 
 # Tech Stack File
 ![](https://img.stackshare.io/repo.svg "repo") [ubogdan/gokeyless](https://github.com/ubogdan/gokeyless)![](https://img.stackshare.io/public_badge.svg "public")
 <br/><br/>
-|15<br/>Tools used|11/09/23 <br/>Report generated|
+|15<br/>Tools used|01/04/24 <br/>Report generated|
 |------|------|
 </div>
 
@@ -200,4 +204,4 @@ Full tech stack [here](/techstack.md)
 <br/>
 <div align='center'>
 
-Generated via [Stack File](https://github.com/apps/stack-file)
+Generated via [Stack File](https://github.com/marketplace/stack-file)
